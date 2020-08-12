@@ -138,10 +138,10 @@ textFail(){
   fi
 
   if [[ "${MODES[@]}" =~ "csv" ]]; then
-    echo "$PROFILE${SEP}$ACCOUNT_NUM${SEP}$REPREGION${SEP}$TITLE_ID${SEP}${level}${SEP}$ITEM_SCORED${SEP}$ITEM_LEVEL${SEP}$TITLE_TEXT${SEP}$1" | tee -a ${OUTPUT_FILE_NAME}.${EXTENSION_CSV}
+    echo "$PROFILE${SEP}$ACCOUNT_NUM${SEP}$REPREGION${SEP}$TITLE_ID${SEP}${level}${SEP}$ITEM_SCORED${SEP}$ITEM_LEVEL${SEP}$TITLE_TEXT${SEP}$1${SEP}$3" | tee -a ${OUTPUT_FILE_NAME}.${EXTENSION_CSV}
   fi
   if [[ "${MODES[@]}" =~ "json" ]]; then
-    generateJsonOutput "$1" "${level}" | tee -a ${OUTPUT_FILE_NAME}.${EXTENSION_JSON}
+    generateJsonOutput "$1" "${level}" "$3" | tee -a ${OUTPUT_FILE_NAME}.${EXTENSION_JSON}
   fi
   if [[ "${MODES[@]}" =~ "json-asff" ]]; then
     JSON_ASFF_OUTPUT=$(generateJsonAsffOutput "$1" "${level}" "HIGH")
@@ -219,6 +219,7 @@ textTitle(){
 generateJsonOutput(){
   local message=$1
   local status=$2
+  local resource_id=$3
   jq -M -c \
   --arg PROFILE "$PROFILE" \
   --arg ACCOUNT_NUM "$ACCOUNT_NUM" \
@@ -230,6 +231,7 @@ generateJsonOutput(){
   --arg TITLE_ID "$TITLE_ID" \
   --arg REPREGION "$REPREGION" \
   --arg TIMESTAMP "$(get_iso8601_timestamp)" \
+  --arg RESOURCE_ID "$resource_id" \
   -n '{
     "Profile": $PROFILE,
     "Account Number": $ACCOUNT_NUM,
@@ -241,6 +243,7 @@ generateJsonOutput(){
     "Control ID": $TITLE_ID,
     "Region": $REPREGION,
     "Timestamp": $TIMESTAMP,
+    "ResourceID": $RESOURCE_ID
   }'
 }
 
