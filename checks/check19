@@ -13,14 +13,15 @@ CHECK_TITLE_check19="[check19] Ensure IAM password policy requires minimum lengt
 CHECK_SCORED_check19="SCORED"
 CHECK_TYPE_check19="LEVEL1"
 CHECK_ASFF_TYPE_check19="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check19="AwsIamAccountPasswordPolicy"
 CHECK_ALTERNATE_check109="check19"
 
 check19(){
   # "Ensure IAM password policy requires minimum length of 14 or greater (Scored)"
   COMMAND19=$($AWSCLI iam get-account-password-policy $PROFILE_OPT --region $REGION --output json --query 'PasswordPolicy.MinimumPasswordLength' 2> /dev/null)
   if [[ $COMMAND19 -gt "13" ]];then
-    textPass "Password Policy requires more than 13 characters"
+    textPass "Password Policy requires more than 13 characters" "GlobalRegion" "AccountPasswordPolicy"
   else
-    textFail "Password Policy missing or weak length requirement"
+    textFail "Password Policy missing or weak length requirement" "GlobalRegion" "AccountPasswordPolicy"
   fi
 }

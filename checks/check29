@@ -24,10 +24,10 @@ check29(){
       CHECK_FL=$($AWSCLI ec2 describe-flow-logs $PROFILE_OPT --region $regx --filter Name="resource-id",Values="${vpcx}" --query 'FlowLogs[?FlowLogStatus==`ACTIVE`].FlowLogId' --output text)
       if [[ $CHECK_FL ]];then
         for FL in $CHECK_FL;do
-          textPass "VPC $vpcx: VPCFlowLog is enabled for LogGroupName: $FL in Region $regx" "$regx"
+          textPass "VPC $vpcx: VPCFlowLog is enabled for LogGroupName: $FL in Region $regx" "$regx" "$vpcx"
         done
       else
-        textFail "VPC $vpcx: No VPCFlowLog has been found in Region $regx" "$regx"
+        textFail "VPC $vpcx: No VPCFlowLog has been found in Region $regx" "$regx" "$vpcx"
       fi
     done
   done

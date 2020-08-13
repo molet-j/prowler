@@ -26,11 +26,11 @@ extra737(){
         CHECK_ROTATION=$($AWSCLI kms get-key-rotation-status --key-id $key $PROFILE_OPT --region $regx  --output text)
         CHECK_STATUS=$($AWSCLI kms describe-key --key-id $key $PROFILE_OPT --region $regx --output json | jq -r '.KeyMetadata.KeyState')
         if [[ $CHECK_STATUS == "PendingDeletion" ]]; then
-          textInfo "$regx: KMS key $key is pending deletion and cannot be rotated" "$regx"
+          textInfo "$regx: KMS key $key is pending deletion and cannot be rotated" "$regx" "$key"
         elif [[ $CHECK_ROTATION == "False" ]]; then
-          textFail "$regx: KMS key $key has rotation disabled!" "$regx"
+          textFail "$regx: KMS key $key has rotation disabled!" "$regx" "$key"
         else
-          textPass "$regx: KMS key $key has rotation enabled" "$regx"
+          textPass "$regx: KMS key $key has rotation enabled" "$regx" "$key"
         fi
       done
     else

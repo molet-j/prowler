@@ -25,9 +25,9 @@ extra740(){
       for snapshot in $LIST_OF_EBS_SNAPSHOTS; do
         SNAPSHOT_IS_ENCRYPTED=$($AWSCLI ec2 describe-snapshots $PROFILE_OPT --region $regx --output text --snapshot-id $snapshot --query Snapshots[*].Encrypted|grep False)
         if [[ $SNAPSHOT_IS_ENCRYPTED ]];then
-          textFail "$regx: $snapshot is currently not encrypted!" "$regx"
+          textFail "$regx: $snapshot is currently not encrypted!" "$regx" "$snapshot"
         else
-          textPass "$regx: $snapshot is encrypted" "$regx"
+          textPass "$regx: $snapshot is encrypted" "$regx" "$snapshot"
         fi
       done
     else

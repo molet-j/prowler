@@ -12,6 +12,7 @@ CHECK_ID_check111="1.11"
 CHECK_TITLE_check111="[check111] Ensure IAM password policy expires passwords within 90 days or less (Scored)"
 CHECK_SCORED_check111="SCORED"
 CHECK_TYPE_check111="LEVEL1"
+CHECK_ASFF_RESOURCE_TYPE_check111="AwsIamAccountPasswordPolicy"
 CHECK_ASFF_TYPE_check111="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
 CHECK_ALTERNATE_check111="check111"
 
@@ -20,9 +21,9 @@ check111(){
   COMMAND111=$($AWSCLI iam get-account-password-policy $PROFILE_OPT --region $REGION --query PasswordPolicy.MaxPasswordAge --output text 2> /dev/null)
   if [[ $COMMAND111 == [0-9]* ]];then
     if [[ "$COMMAND111" -le "90" ]];then
-      textPass "Password Policy includes expiration (Value: $COMMAND111)"
+      textPass "Password Policy includes expiration (Value: $COMMAND111)" "GlobalRegion" "AccountPasswordPolicy"
     else
-      textFail "Password expiration is set greater than 90 days"
+      textFail "Password expiration is set greater than 90 days" "GlobalRegion" "AccountPasswordPolicy"
     fi
   else
     textFail "Password expiration is not set"

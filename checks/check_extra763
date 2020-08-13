@@ -24,16 +24,16 @@ extra763(){
     for bucket in $LIST_OF_BUCKETS;do
       BUCKET_VERSIONING_ENABLED=$($AWSCLI s3api get-bucket-versioning --bucket $bucket $PROFILE_OPT --query Status --output text 2>&1)
       if [[ $(echo "$BUCKET_VERSIONING_ENABLED" | grep AccessDenied) ]]; then
-        textFail "Access Denied Trying to Get Bucket Versioning for $bucket"
+        textFail "Access Denied Trying to Get Bucket Versioning for $bucket" "GlobalRegion" "$bucket"
         continue
       fi
       if [[ $(echo "$BUCKET_VERSIONING_ENABLED" | grep "^Enabled$") ]]; then
-        textPass "Bucket $bucket has versioning enabled"
+        textPass "Bucket $bucket has versioning enabled" "GlobalRegion" "$bucket"
       else
-        textFail "Bucket $bucket has versioning disabled!"
+        textFail "Bucket $bucket has versioning disabled!" "GlobalRegion" "$bucket"
       fi
     done
   else
-    textInfo "No S3 Buckets found"
+    textInfo "No S3 Buckets found" "GlobalRegion" ""
   fi
 }

@@ -36,13 +36,13 @@ extra734(){
       # query to get if has encryption enabled or not
       RESULT=$($AWSCLI s3api get-bucket-encryption $PROFILE_OPT --region $BUCKET_LOCATION --bucket $bucket --query ServerSideEncryptionConfiguration.Rules[].ApplyServerSideEncryptionByDefault[].SSEAlgorithm --output text 2>&1)
       if [[ $(echo "$RESULT" | grep AccessDenied) ]]; then
-        textFail "Access Denied Trying to Get Encryption for $bucket"
+        textFail "Access Denied Trying to Get Encryption for $bucket" "GlobalRegion" "$bucket"
         continue
       fi
 
       if [[ $RESULT == "AES256" || $RESULT == "aws:kms" ]];
       then
-        textPass "Bucket $bucket is enabled for default encryption with $RESULT"
+        textPass "Bucket $bucket is enabled for default encryption with $RESULT" "GlobalRegion" "$bucket"
         continue
       fi
 
@@ -51,12 +51,12 @@ extra734(){
       # get bucket policy
       $AWSCLI s3api get-bucket-policy $PROFILE_OPT --bucket $bucket --region $BUCKET_LOCATION --output text --query Policy > $TEMP_SSE_POLICY_FILE 2>&1
       if [[ $(grep AccessDenied $TEMP_SSE_POLICY_FILE) ]]; then
-        textFail "Access Denied Trying to Get Bucket Policy for $bucket"
+        textFail "Access Denied Trying to Get Bucket Policy for $bucket" "GlobalRegion" "$bucket"
         rm -f $TEMP_SSE_POLICY_FILE
         continue
       fi
       if [[ $(grep NoSuchBucketPolicy $TEMP_SSE_POLICY_FILE) ]]; then
-        textFail "No bucket policy for $bucket"
+        textFail "No bucket policy for $bucket" "GlobalRegion" "$bucket"
         rm -f $TEMP_SSE_POLICY_FILE
         continue
       fi
@@ -64,18 +64,18 @@ extra734(){
       # check if the S3 policy forces SSE s3:x-amz-server-side-encryption:true
       CHECK_BUCKET_SSE_POLICY_PRESENT=$(cat $TEMP_SSE_POLICY_FILE | jq --arg arn "arn:${AWS_PARTITION}:s3:::${bucket}/*" '.Statement[]|select(.Effect=="Deny" and ((.Principal|type == "object") and .Principal.AWS == "*") or ((.Principal|type == "string") and .Principal == "*") and .Action=="s3:PutObject" and .Resource==$arn and .Condition.StringEquals."s3:x-amz-server-side-encryption" != null)')
       if [[ $CHECK_BUCKET_SSE_POLICY_PRESENT == "" ]]; then
-        textFail "Bucket $bucket does not enforce encryption!"
+        textFail "Bucket $bucket does not enforce encryption!" "GlobalRegion" "$bucket"
         rm -f $TEMP_SSE_POLICY_FILE
         continue
       fi
       CHECK_BUCKET_SSE_POLICY_VALUE=$(echo "$CHECK_BUCKET_SSE_POLICY_PRESENT" | jq -r '.Condition.StringNotEquals."s3:x-amz-server-side-encryption"')
 
-      textPass "Bucket $bucket has S3 bucket policy to enforce encryption with $CHECK_BUCKET_SSE_POLICY_VALUE"
+      textPass "Bucket $bucket has S3 bucket policy to enforce encryption with $CHECK_BUCKET_SSE_POLICY_VALUE" "GlobalRegion" "$bucket"
 
       rm -f $TEMP_SSE_POLICY_FILE
     done
 
   else
-    textInfo "No S3 Buckets found"
+    textInfo "No S3 Buckets found" "GlobalRegion"
   fi
 }

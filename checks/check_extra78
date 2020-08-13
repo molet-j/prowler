@@ -28,7 +28,7 @@ extra78(){
       while read -r rds_instance;do
         RDS_NAME=$(echo $rds_instance | awk '{ print $1; }')
         RDS_DNSNAME=$(echo $rds_instance | awk '{ print $2; }')
-        textFail "$regx: RDS instance: $RDS_NAME at $RDS_DNSNAME is set as Publicly Accessible!" "$regx"
+        textFail "$regx: RDS instance: $RDS_NAME at $RDS_DNSNAME is set as Publicly Accessible!" "$regx" "$RDS_NAME"
       done <<< "$LIST_OF_RDS_PUBLIC_INSTANCES"
       else
         textPass "$regx: no Publicly Accessible RDS instances found" "$regx"

@@ -13,14 +13,15 @@ CHECK_TITLE_check18="[check18] Ensure IAM password policy require at least one n
 CHECK_SCORED_check18="SCORED"
 CHECK_TYPE_check18="LEVEL1"
 CHECK_ASFF_TYPE_check18="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check18="AwsIamAccountPasswordPolicy"
 CHECK_ALTERNATE_check108="check18"
 
 check18(){
   # "Ensure IAM password policy require at least one number (Scored)"
   COMMAND18=$($AWSCLI iam get-account-password-policy $PROFILE_OPT --region $REGION --output json --query 'PasswordPolicy.RequireNumbers' 2> /dev/null) # must be true
   if [[ "$COMMAND18" == "true" ]];then
-    textPass "Password Policy requires number"
+    textPass "Password Policy requires number" "GlobalRegion" "AccountPasswordPolicy"
   else
-    textFail "Password Policy missing number requirement"
+    textFail "Password Policy missing number requirement" "GlobalRegion" "AccountPasswordPolicy"
   fi
 }

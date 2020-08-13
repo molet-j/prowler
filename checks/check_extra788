@@ -32,7 +32,7 @@ extra788(){
         # If the endpoint starts with "vpc-" it is in a VPC then it is fine.
         if [[ "$ES_DOMAIN_ENDPOINT" =~ ^vpc-* ]];then
           ES_DOMAIN_VPC=$($AWSCLI es describe-elasticsearch-domain --domain-name $domain $PROFILE_OPT --region $regx --query 'DomainStatus.VPCOptions.VPCId' --output text)
-          textInfo "$regx: Amazon ES domain $domain is in VPC $ES_DOMAIN_VPC run extra779 to make sure it is not exposed using custom proxy" "$regx"
+          textInfo "$regx: Amazon ES domain $domain is in VPC $ES_DOMAIN_VPC run extra779 to make sure it is not exposed using custom proxy" "$regx" "$domain"
         else
           $AWSCLI es describe-elasticsearch-domain-config --domain-name $domain $PROFILE_OPT --region $regx --query DomainConfig.AccessPolicies.Options --output text > $TEMP_POLICY_FILE 2> /dev/null
           CHECK_ES_DOMAIN_POLICY_OPEN=$(cat $TEMP_POLICY_FILE | jq -r '. | .Statement[] | select(.Effect == "Allow" and (((.Principal|type == "object") and .Principal.AWS == "*") or ((.Principal|type == "string") and .Principal == "*")) and select(has("Condition") | not))')
@@ -64,23 +64,23 @@ extra788(){
             CHECH_ES_HTTPS=$(curl -m 2 -s -w "%{http_code}" -o /dev/null -X GET "https://$ES_DOMAIN_ENDPOINT/_cat/indices")
             httpStatus $CHECH_ES_HTTPS
             if [[ $CHECH_ES_HTTPS -eq "200" ]];then
-              textFail "$regx: Amazon ES domain $domain policy allows Anonymous access and ES service endpoint $ES_DOMAIN_ENDPOINT responded $SERVER_RESPONSE" "$regx"
+              textFail "$regx: Amazon ES domain $domain policy allows Anonymous access and ES service endpoint $ES_DOMAIN_ENDPOINT responded $SERVER_RESPONSE" "$regx" "$domain"
             else
-              textInfo "$regx: Amazon ES domain $domain policy allows Anonymous access but ES service endpoint $ES_DOMAIN_ENDPOINT responded $SERVER_RESPONSE" "$regx"
+              textInfo "$regx: Amazon ES domain $domain policy allows Anonymous access but ES service endpoint $ES_DOMAIN_ENDPOINT responded $SERVER_RESPONSE" "$regx" "$domain"
             fi
             # check for Kibana on port 443
             CHECH_KIBANA_HTTPS=$(curl -m 2 -s -w "%{http_code}" -o /dev/null -X GET "https://$ES_DOMAIN_ENDPOINT/_plugin/kibana")
             httpStatus $CHECH_KIBANA_HTTPS
             if [[ $CHECH_KIBANA_HTTPS -eq "200" || $CHECH_KIBANA_HTTPS -eq "301" || $CHECH_KIBANA_HTTPS -eq "302" ]];then
-              textFail "$regx: Amazon ES domain $domain policy allows Anonymous access and Kibana service endpoint $ES_DOMAIN_ENDPOINT responded $SERVER_RESPONSE" "$regx"
+              textFail "$regx: Amazon ES domain $domain policy allows Anonymous access and Kibana service endpoint $ES_DOMAIN_ENDPOINT responded $SERVER_RESPONSE" "$regx" "$domain"
             else
-              textInfo "$regx: Amazon ES domain $domain policy allows Anonymous access but Kibana service endpoint $ES_DOMAIN_ENDPOINT responded $SERVER_RESPONSE" "$regx"
+              textInfo "$regx: Amazon ES domain $domain policy allows Anonymous access but Kibana service endpoint $ES_DOMAIN_ENDPOINT responded $SERVER_RESPONSE" "$regx" "$domain"
             fi
           else
             if [[ $CHECK_ES_DOMAIN_POLICY_HAS_CONDITION && ${CHECK_ES_DOMAIN_POLICY_CONDITION_PRIVATE_IP[@]} ]];then
-              textInfo "$regx: Amazon ES domain $domain policy allows access from a Private IP or CIDR RFC1918 $(echo ${CONDITION_HAS_PRIVATE_IP_ARRAY[@]})" "$regx"
+              textInfo "$regx: Amazon ES domain $domain policy allows access from a Private IP or CIDR RFC1918 $(echo ${CONDITION_HAS_PRIVATE_IP_ARRAY[@]})" "$regx" "$domain"
             else
-              textPass "$regx: Amazon ES domain $domain does not allow Anonymous cross account access" "$regx"
+              textPass "$regx: Amazon ES domain $domain does not allow Anonymous cross account access" "$regx" "$domain"
             fi
           fi
           rm -f $TEMP_POLICY_FILE

@@ -15,7 +15,7 @@ CHECK_ID_extra790="7.90"
 CHECK_TITLE_extra790="[extra790] Find trust boundaries in VPC endpoint services whitelisted principles"
 CHECK_SCORED_extra790="NOT_SCORED"
 CHECK_TYPE_extra790="EXTRA"
-CHECK_ASFF_RESOURCE_TYPE_extra790="AwsEc2Vpc"
+CHECK_ASFF_RESOURCE_TYPE_extra790="AwsEc2VpcEndpointService"
 CHECK_ALTERNATE_extra790="extra790"
 
 extra790(){
@@ -44,7 +44,7 @@ extra790(){
 
                 for ACCOUNT_ID in ${TRUSTED_ACCOUNT_IDS}; do
                     if [[ "${ACCOUNT_ID}" == "${ENDPOINT_PERMISSION_ACCOUNT_ID}" ]]; then
-                        textPass "${regx}: Found trusted account in VPC endpoint service permission ${ENDPOINT_PERMISSION}" "${regx}"
+                        textPass "${regx}: Found trusted account in VPC endpoint service permission ${ENDPOINT_PERMISSION}" "${regx}" "${ENDPOINT_SERVICE_ID}"
                         # Algorithm:
                         # Remove all trusted ACCOUNT_IDs from ENDPOINT_PERMISSIONS_LIST.
                         # As a result, the ENDPOINT_PERMISSIONS_LIST finally contains only unknown/untrusted account ids.
@@ -54,7 +54,7 @@ extra790(){
             done
 
             for UNTRUSTED_PERMISSION in ${ENDPOINT_PERMISSIONS_LIST}; do
-                textFail "${regx}: Found untrusted account in VPC endpoint service permission ${UNTRUSTED_PERMISSION}" "${regx}"
+                textFail "${regx}: Found untrusted account in VPC endpoint service permission ${UNTRUSTED_PERMISSION}" "${regx}" "${ENDPOINT_SERVICE_ID}"
             done
         done
     done

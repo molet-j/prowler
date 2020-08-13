@@ -21,9 +21,9 @@ check27(){
   $AWSCLI cloudtrail describe-trails --query 'trailList[].[Name,KmsKeyId]' --output text $PROFILE_OPT --region $REGION | while read trail key; do
     if [[ "$trail" ]] ; then
         if [[ "$key" != "None" ]] ; then
-            textPass "KMS key found for $trail"
+            textPass "KMS key found for $trail" "$REGION" "$trail"
         else
-            textFail "Encryption is not enabled in your CloudTrail trail $trail (KMS key not found)!"
+            textFail "Encryption is not enabled in your CloudTrail trail $trail (KMS key not found)!" "$REGION" "$trail"
         fi
     else
         textFail "CloudTrail bucket doesn't exist!"

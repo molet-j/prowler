@@ -31,16 +31,16 @@ check26(){
         if [ "$CLOUDTRAIL_ACCOUNT_ID" == "$ACCOUNT_NUM" ]; then
           CLOUDTRAILBUCKET_LOGENABLED=$($AWSCLI s3api get-bucket-logging --bucket $bucket $PROFILE_OPT --region $REGION --query 'LoggingEnabled.TargetBucket' 2>&1)
           if [[ $(echo "$CLOUDTRAILBUCKET_LOGENABLED" | grep AccessDenied) ]]; then
-            textInfo "Access Denied Trying to Get Bucket Logging for $bucket"
+            textInfo "Access Denied Trying to Get Bucket Logging for $bucket" "GlobalRegion" "$bucket"
             continue
           fi
           if [[ $CLOUDTRAILBUCKET_LOGENABLED != "null" ]]; then
-            textPass "Bucket access logging enabled in CloudTrail S3 bucket $bucket for $trail"
+            textPass "Bucket access logging enabled in CloudTrail S3 bucket $bucket for $trail" "GlobalRegion" "$bucket"
           else
-            textFail "Bucket access logging is not enabled in CloudTrail S3 bucket $bucket for $trail"
+            textFail "Bucket access logging is not enabled in CloudTrail S3 bucket $bucket for $trail" "GlobalRegion" "$bucket"
           fi
         else
-          textInfo "CloudTrail S3 bucket $bucket for trail $trail is not in current account"
+          textInfo "CloudTrail S3 bucket $bucket for trail $trail is not in current account" "GlobalRegion" "$bucket"
         fi
       else
         textFail "CloudTrail bucket not found!"

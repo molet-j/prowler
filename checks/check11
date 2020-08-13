@@ -13,6 +13,7 @@ CHECK_TITLE_check11="[check11] Avoid the use of the root account (Scored)"
 CHECK_SCORED_check11="SCORED"
 CHECK_TYPE_check11="LEVEL1"
 CHECK_ASFF_TYPE_check11="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check11="AwsIamUserROOT"
 CHECK_ALTERNATE_check101="check11"
 
 check11(){
@@ -26,13 +27,13 @@ check11(){
       days_not_in_use=$(how_many_days_from_today ${date%T*})
       if [ "$days_not_in_use" -gt "$MAX_DAYS" ];then
           failures=1
-          textFail "Root user in the account was last accessed ${MAX_DAYS#-} day ago"
+          textFail "Root user in the account was last accessed ${MAX_DAYS#-} day ago" "GlobalRegion" "root_account"
           break
       fi
     fi
   done
 
   if [[ $failures == 0 ]]; then
-      textPass "Root user in the account wasn't accessed in the last ${MAX_DAYS#-} days"
+      textPass "Root user in the account wasn't accessed in the last ${MAX_DAYS#-} days" "GlobalRegion" "root_account"
   fi
 }

@@ -14,6 +14,7 @@ CHECK_ID_extra76="7.6"
 CHECK_TITLE_extra76="[extra76] Ensure there are no EC2 AMIs set as Public (Not Scored) (Not part of CIS benchmark)"
 CHECK_SCORED_extra76="NOT_SCORED"
 CHECK_TYPE_extra76="EXTRA"
+CHECK_ASFF_RESOURCE_TYPE_extra76="AwsEc2Image"
 CHECK_ALTERNATE_extra706="extra76"
 CHECK_ALTERNATE_check76="extra76"
 CHECK_ALTERNATE_check706="extra76"
@@ -25,10 +26,10 @@ extra76(){
     LIST_OF_PUBLIC_AMIS=$($AWSCLI ec2 describe-images --owners self $PROFILE_OPT --region $regx --filters "Name=is-public,Values=true" --query 'Images[*].{ID:ImageId}' --output text)
     if [[ $LIST_OF_PUBLIC_AMIS ]];then
       for ami in $LIST_OF_PUBLIC_AMIS; do
-        textFail "$regx: $ami is currently Public!" "$regx"
+        textFail "$regx: $ami is currently Public!" "$regx" "$ami"
       done
     else
-      textPass "$regx: No Public AMIs found" "$regx"
+      textPass "$regx: No Public AMIs found" "$regx" "$ami"
     fi
   done
 }

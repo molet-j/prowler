@@ -26,18 +26,19 @@ check21(){
 				trail_count=$((trail_count + 1))
 				MULTIREGION_TRAIL_STATUS=$($AWSCLI cloudtrail describe-trails $PROFILE_OPT --region $regx --query 'trailList[*].IsMultiRegionTrail' --output text --trail-name-list $trail)
 				if [[ "$MULTIREGION_TRAIL_STATUS" == 'False' ]];then
-					textFail "$trail trail in $regx is not enabled in multi region mode"
+					textFail "$trail trail in $regx is not enabled in multi region mode" "$regx" "$trail"
 				else
-					textPass "$trail trail in $regx is enabled for all regions"
+					textPass "$trail trail in $regx is enabled for all regions" "$regx" "$trail"
 				fi
 			done
 		fi
 	done
 
 	if [[ $trail_count == 0 ]]; then
-	  ORG_TRAIL=$($AWSCLI cloudtrail describe-trails $PROFILE_OPT --region us-east-1 | jq '.trailList[] | select(.IsMultiRegionTrail and .IsOrganizationTrail) | .Name' | sed 's/"//g')
+	  regx="us-east-1"
+	  ORG_TRAIL=$($AWSCLI cloudtrail describe-trails $PROFILE_OPT --region $regx | jq '.trailList[] | select(.IsMultiRegionTrail and .IsOrganizationTrail) | .Name' | sed 's/"//g')
 	  if [[ $ORG_TRAIL != "" ]]; then
-      textPass "$ORG_TRAIL trail in $regx is enabled for all regions"
+      textPass "$ORG_TRAIL trail in $regx is enabled for all regions" "$regx" "$ORG_TRAIL"
     else
       textFail "No CloudTrail trails were found in the account"
     fi

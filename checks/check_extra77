@@ -15,6 +15,7 @@ CHECK_ID_extra77="7.7"
 CHECK_TITLE_extra77="[extra77] Ensure there are no ECR repositories set as Public (Not Scored) (Not part of CIS benchmark)"
 CHECK_SCORED_extra77="NOT_SCORED"
 CHECK_TYPE_extra77="EXTRA"
+CHECK_ASFF_RESOURCE_TYPE_extra768="AwsElasticContainerRegistryRepository"
 CHECK_ALTERNATE_extra707="extra77"
 CHECK_ALTERNATE_check77="extra77"
 CHECK_ALTERNATE_check707="extra77"
@@ -24,7 +25,7 @@ extra77(){
   for region in $REGIONS; do
     LIST_ECR_REPOS=$($AWSCLI ecr describe-repositories $PROFILE_OPT --region $region --query "repositories[*].[repositoryName]" --output text 2>&1)
     if [[ $(echo "$LIST_ECR_REPOS" | grep AccessDenied) ]]; then
-      textFail "Access Denied Trying to describe ECR repositories"
+      textFail "Access Denied Trying to describe ECR repositories" "$region"
       continue
     fi
     if [[ ! -z "$LIST_ECR_REPOS" ]]; then
@@ -32,22 +33,22 @@ extra77(){
         TEMP_POLICY_FILE=$(mktemp -t prowler-${ACCOUNT_NUM}-ecr-repo.policy.XXXXXXXXXX)
         $AWSCLI ecr get-repository-policy $PROFILE_OPT --region $region --repository-name $repo --query "policyText" --output text > $TEMP_POLICY_FILE 2>&1
         if [[ $(grep AccessDenied $TEMP_POLICY_FILE) ]]; then
-          textFail "$region: $repo Access Denied for get-repository-policy"
+          textFail "$region: $repo Access Denied for get-repository-policy" "$region" "$repo"
           rm -f $TEMP_POLICY_FILE
           continue
         fi
         # https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policies.html - "By default, only the repository owner has access to a repository."
         if [[ $(grep RepositoryPolicyNotFoundException $TEMP_POLICY_FILE) ]]; then
-          textPass "$region: $repo is not open" "$region"
+          textPass "$region: $repo is not open" "$region" "$repo"
           rm -f $TEMP_POLICY_FILE
           continue
         fi
         # check if the policy has Principal as *
         CHECK_ECR_REPO_ALLUSERS_POLICY=$(cat $TEMP_POLICY_FILE | jq '.Statement[]|select(.Effect=="Allow" and (((.Principal|type == "object") and .Principal.AWS == "*") or ((.Principal|type == "string") and .Principal == "*")))')
         if [[ $CHECK_ECR_REPO_ALLUSERS_POLICY ]]; then
-          textFail "$region: $repo policy \"may\" allow Anonymous users to perform actions (Principal: \"*\")" "$region"
+          textFail "$region: $repo policy \"may\" allow Anonymous users to perform actions (Principal: \"*\")" "$region" "$repo"
         else
-          textPass "$region: $repo is not open" "$region"
+          textPass "$region: $repo is not open" "$region" "$repo"
         fi
         rm -f $TEMP_POLICY_FILE
       done

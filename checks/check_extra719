@@ -14,6 +14,7 @@ CHECK_ID_extra719="7.19"
 CHECK_TITLE_extra719="[extra719] Check if Route53 public hosted zones are logging queries to CloudWatch Logs (Not Scored) (Not part of CIS benchmark)"
 CHECK_SCORED_extra719="NOT_SCORED"
 CHECK_TYPE_extra719="EXTRA"
+CHECK_ASFF_RESOURCE_TYPE_extra719="AwsRoute53HostedZone"
 CHECK_ALTERNATE_check719="extra719"
 
 extra719(){
@@ -23,9 +24,9 @@ extra719(){
     for hostedzoneid in $LIST_OF_HOSTED_ZONES;do
       HOSTED_ZONE_QUERY_LOG_ENABLED=$($AWSCLI route53 list-query-logging-configs --hosted-zone-id $hostedzoneid $PROFILE_OPT --query QueryLoggingConfigs[*].CloudWatchLogsLogGroupArn --output text|cut -d: -f7)
       if [[ $HOSTED_ZONE_QUERY_LOG_ENABLED ]];then
-        textPass "Route53 public hosted zone Id $hostedzoneid has query logging enabled in Log Group $HOSTED_ZONE_QUERY_LOG_ENABLED"
+        textPass "Route53 public hosted zone Id $hostedzoneid has query logging enabled in Log Group $HOSTED_ZONE_QUERY_LOG_ENABLED" "GlobalRegion" "$hostedzoneid"
       else
-        textFail "Route53 public hosted zone Id $hostedzoneid has query logging disabled!"
+        textFail "Route53 public hosted zone Id $hostedzoneid has query logging disabled!" "GlobalRegion" "$hostedzoneid"
       fi
     done
   else

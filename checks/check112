@@ -12,6 +12,7 @@ CHECK_ID_check112="1.12"
 CHECK_TITLE_check112="[check112] Ensure no root account access key exists (Scored)"
 CHECK_SCORED_check112="SCORED"
 CHECK_TYPE_check112="LEVEL1"
+CHECK_ASFF_RESOURCE_TYPE_check112="AwsIamUserROOT"
 CHECK_ASFF_TYPE_check112="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
 CHECK_ALTERNATE_check112="check112"
 
@@ -21,13 +22,13 @@ check112(){
   ROOTKEY1=$(cat $TEMP_REPORT_FILE |grep root_account|awk -F',' '{ print $9 }')
   ROOTKEY2=$(cat $TEMP_REPORT_FILE |grep root_account|awk -F',' '{ print $14 }')
   if [ "$ROOTKEY1" == "false" ];then
-    textPass "No access key 1 found for root"
+    textPass "No access key 1 found for root" "GlobalRegion" "root_account"
   else
-    textFail "Found access key 1 for root"
+    textFail "Found access key 1 for root" "GlobalRegion" "root_account"
   fi
   if [ "$ROOTKEY2" == "false" ];then
-    textPass "No access key 2 found for root"
+    textPass "No access key 2 found for root" "GlobalRegion" "root_account"
   else
-    textFail "Found access key 2 for root"
+    textFail "Found access key 2 for root" "GlobalRegion" "root_account"
   fi
 }

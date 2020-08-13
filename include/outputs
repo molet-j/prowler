@@ -50,11 +50,19 @@ textPass(){
   else
     REPREGION=$REGION
   fi
+  if [[ "${REPREGION}" == "GlobalRegion" ]]; then
+    REPREGION=$REGION
+  fi
+  if [[ $3 ]]; then
+    RESOURCE_ID=$3
+  else
+    RESOURCE_ID=""
+  fi
   if [[ "${MODES[@]}" =~ "csv" ]]; then
-    echo "$PROFILE${SEP}$ACCOUNT_NUM${SEP}$REPREGION${SEP}$TITLE_ID${SEP}PASS${SEP}$ITEM_SCORED${SEP}$ITEM_LEVEL${SEP}$TITLE_TEXT${SEP}$1" | tee -a ${OUTPUT_FILE_NAME}.$EXTENSION_CSV
+    echo "$PROFILE${SEP}$ACCOUNT_NUM${SEP}$REPREGION${SEP}$TITLE_ID${SEP}PASS${SEP}$ITEM_SCORED${SEP}$ITEM_LEVEL${SEP}$TITLE_TEXT${SEP}$1${SEP}$RESOURCE_ID" | tee -a ${OUTPUT_FILE_NAME}.$EXTENSION_CSV
   fi
   if [[ "${MODES[@]}" =~ "json" ]]; then
-    generateJsonOutput "$1" "Pass" | tee -a ${OUTPUT_FILE_NAME}.$EXTENSION_JSON
+    generateJsonOutput "$1" "Pass" "$RESOURCE_ID" | tee -a ${OUTPUT_FILE_NAME}.$EXTENSION_JSON
   fi
   if [[ "${MODES[@]}" =~ "json-asff" ]]; then
     JSON_ASFF_OUTPUT=$(generateJsonAsffOutput "$1" "PASSED" "INFORMATIONAL")
@@ -87,11 +95,19 @@ textInfo(){
   else
     REPREGION=$REGION
   fi
+  if [[ "${REPREGION}" == "GlobalRegion" ]]; then
+    REPREGION=$REGION
+  fi
+  if [[ $3 ]]; then
+    RESOURCE_ID=$3
+  else
+    RESOURCE_ID=""
+  fi
   if [[ "${MODES[@]}" =~ "csv" ]]; then
-    echo "$PROFILE${SEP}$ACCOUNT_NUM${SEP}$REPREGION${SEP}$TITLE_ID${SEP}INFO${SEP}$ITEM_SCORED${SEP}$ITEM_LEVEL${SEP}$TITLE_TEXT${SEP}$1" | tee -a ${OUTPUT_FILE_NAME}.${EXTENSION_CSV}
+    echo "$PROFILE${SEP}$ACCOUNT_NUM${SEP}$REPREGION${SEP}$TITLE_ID${SEP}INFO${SEP}$ITEM_SCORED${SEP}$ITEM_LEVEL${SEP}$TITLE_TEXT${SEP}$1${SEP}$RESOURCE_ID" | tee -a ${OUTPUT_FILE_NAME}.${EXTENSION_CSV}
   fi
   if [[ "${MODES[@]}" =~ "json" ]]; then
-    generateJsonOutput "$1" "Info" | tee -a ${OUTPUT_FILE_NAME}.${EXTENSION_JSON}
+    generateJsonOutput "$1" "Info" "$RESOURCE_ID" | tee -a ${OUTPUT_FILE_NAME}.${EXTENSION_JSON}
   fi
   if is_junit_output_enabled; then
     output_junit_info "$1"
@@ -136,12 +152,20 @@ textFail(){
   else
     REPREGION=$REGION
   fi
+  if [[ "${REPREGION}" == "GlobalRegion" ]]; then
+    REPREGION=$REGION
+  fi
+  if [[ $3 ]]; then
+    RESOURCE_ID=$3
+  else
+    RESOURCE_ID=""
+  fi
 
   if [[ "${MODES[@]}" =~ "csv" ]]; then
-    echo "$PROFILE${SEP}$ACCOUNT_NUM${SEP}$REPREGION${SEP}$TITLE_ID${SEP}${level}${SEP}$ITEM_SCORED${SEP}$ITEM_LEVEL${SEP}$TITLE_TEXT${SEP}$1${SEP}$3" | tee -a ${OUTPUT_FILE_NAME}.${EXTENSION_CSV}
+    echo "$PROFILE${SEP}$ACCOUNT_NUM${SEP}$REPREGION${SEP}$TITLE_ID${SEP}${level}${SEP}$ITEM_SCORED${SEP}$ITEM_LEVEL${SEP}$TITLE_TEXT${SEP}$1${SEP}$RESOURCE_ID" | tee -a ${OUTPUT_FILE_NAME}.${EXTENSION_CSV}
   fi
   if [[ "${MODES[@]}" =~ "json" ]]; then
-    generateJsonOutput "$1" "${level}" "$3" | tee -a ${OUTPUT_FILE_NAME}.${EXTENSION_JSON}
+    generateJsonOutput "$1" "${level}" "$RESOURCE_ID" | tee -a ${OUTPUT_FILE_NAME}.${EXTENSION_JSON}
   fi
   if [[ "${MODES[@]}" =~ "json-asff" ]]; then
     JSON_ASFF_OUTPUT=$(generateJsonAsffOutput "$1" "${level}" "HIGH")
@@ -232,6 +256,7 @@ generateJsonOutput(){
   --arg REPREGION "$REPREGION" \
   --arg TIMESTAMP "$(get_iso8601_timestamp)" \
   --arg RESOURCE_ID "$resource_id" \
+  --arg RESOURCE_TYPE "$ASFF_RESOURCE_TYPE" \
   -n '{
     "Profile": $PROFILE,
     "Account Number": $ACCOUNT_NUM,
@@ -243,7 +268,8 @@ generateJsonOutput(){
     "Control ID": $TITLE_ID,
     "Region": $REPREGION,
     "Timestamp": $TIMESTAMP,
-    "ResourceID": $RESOURCE_ID
+    "ResourceID": $RESOURCE_ID,
+    "ResourceType": $RESOURCE_TYPE
   }'
 }
 

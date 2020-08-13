@@ -14,6 +14,7 @@ CHECK_ID_extra713="7.13"
 CHECK_TITLE_extra713="[extra713] Check if GuardDuty is enabled (Not Scored) (Not part of CIS benchmark)"
 CHECK_SCORED_extra713="NOT_SCORED"
 CHECK_TYPE_extra713="EXTRA"
+CHECK_ASFF_RESOURCE_TYPE_extra713="AwsGuardDutyDetector"
 CHECK_ALTERNATE_check713="extra713"
 
 extra713(){
@@ -26,13 +27,13 @@ extra713(){
         while read -r detector;do
           DETECTOR_ENABLED=$($AWSCLI guardduty get-detector --detector-id $detector $PROFILE_OPT --region $regx --query "Status" --output text|grep ENABLED)
           if [[ $DETECTOR_ENABLED ]]; then
-            textPass "$regx: GuardDuty detector $detector enabled" "$regx"
+            textPass "$regx: GuardDuty detector $detector enabled" "$regx" "$detector"
           else
-            textFail "$regx: GuardDuty detector $detector configured but suspended" "$regx"
+            textFail "$regx: GuardDuty detector $detector configured but suspended" "$regx" "$detector"
           fi
         done <<< "$LIST_OF_GUARDDUTY_DETECTORS"
-        else
-          textFail "$regx: GuardDuty detector not configured!" "$regx"
+      else
+        textFail "$regx: GuardDuty detector not configured!" "$regx"
       fi
       else 
       # if list-detectors return any error 

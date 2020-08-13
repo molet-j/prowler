@@ -31,7 +31,7 @@ extra747(){
         fi
       done
     else
-      textInfo "$regx: No RDS instances found" "$regx" ""
+      textInfo "$regx: No RDS instances found" "$regx"
     fi
   done
 }

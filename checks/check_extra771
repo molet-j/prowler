@@ -23,13 +23,13 @@ extra771(){
     for bucket in $LIST_OF_BUCKETS;do
       BUCKET_POLICY_STATEMENTS=$($AWSCLI s3api $PROFILE_OPT get-bucket-policy --region $REGION --bucket $bucket --output json --query Policy 2>&1)
       if [[ $BUCKET_POLICY_STATEMENTS == *GetBucketPolicy* ]]; then
-        textInfo "Bucket policy does not exist for bucket $bucket"
+        textInfo "Bucket policy does not exist for bucket $bucket" "GlobalRegion" "$bucket"
       else
         BUCKET_POLICY_BAD_STATEMENTS=$(echo $BUCKET_POLICY_STATEMENTS | jq --arg arn "arn:${AWS_PARTITION}:s3:::$bucket" 'fromjson | .Statement[]|select(.Effect=="Allow" and (((.Principal|type == "object") and .Principal.AWS == "*") or ((.Principal|type == "string") and .Principal == "*")) and (.Action|startswith("s3:Put") or startswith("s3:*")) and .Condition == null)')
         if [[ $BUCKET_POLICY_BAD_STATEMENTS != "" ]]; then
-          textFail "Bucket $bucket allows public write: $BUCKET_POLICY_BAD_STATEMENTS"
+          textFail "Bucket $bucket allows public write: $BUCKET_POLICY_BAD_STATEMENTS" "GlobalRegion" "$bucket"
         else
-          textPass "Bucket $bucket has S3 bucket policy which does not allow public write access"
+          textPass "Bucket $bucket has S3 bucket policy which does not allow public write access" "GlobalRegion" "$bucket"
         fi
       fi
     done

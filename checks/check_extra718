@@ -24,13 +24,13 @@ extra718(){
     for bucket in $LIST_OF_BUCKETS;do
       BUCKET_SERVER_LOG_ENABLED=$($AWSCLI s3api get-bucket-logging --bucket $bucket $PROFILE_OPT --query [LoggingEnabled] --output text 2>&1)
       if [[ $(echo "$BUCKET_SERVER_LOG_ENABLED" | grep AccessDenied) ]]; then
-        textFail "Access Denied Trying to Get Bucket Logging for $bucket"
+        textFail "Access Denied Trying to Get Bucket Logging for $bucket" "GlobalRegion" "$bucket"
         continue
       fi
       if [[ $(echo "$BUCKET_SERVER_LOG_ENABLED" | grep "^None$") ]]; then
-        textFail "Bucket $bucket has server access logging disabled!"
+        textFail "Bucket $bucket has server access logging disabled!" "GlobalRegion" "$bucket"
       else
-        textPass "Bucket $bucket has server access logging enabled"
+        textPass "Bucket $bucket has server access logging enabled" "GlobalRegion" "$bucket"
       fi
     done
   else

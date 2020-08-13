@@ -14,12 +14,13 @@ CHECK_ID_extra761="7.61"
 CHECK_TITLE_extra761="[extra761] Check if EBS Default Encryption is activated (Not Scored) (Not part of CIS benchmark)"
 CHECK_SCORED_extra761="NOT_SCORED"
 CHECK_TYPE_extra761="EXTRA"
+CHECK_ASFF_RESOURCE_TYPE_extra761="AwsEbsDefaultEncryption"
 CHECK_ALTERNATE_check761="extra761"
 
 extra761(){
   textInfo "Looking for EBS Default Encryption activation in all regions...  "
-  for regx in $REGIONS; do
-    EBS_DEFAULT_ENCRYPTION=$($AWSCLI ec2 get-ebs-encryption-by-default $PROFILE_OPT --region $regx --query 'EbsEncryptionByDefault' 2>&1)
+  for region in $REGIONS; do
+    EBS_DEFAULT_ENCRYPTION=$($AWSCLI ec2 get-ebs-encryption-by-default $PROFILE_OPT --region $region --query 'EbsEncryptionByDefault' 2>&1)
     if [[ $(echo "$EBS_DEFAULT_ENCRYPTION" | grep "argument operation: Invalid choice") ]]; then
       textFail "Newer aws cli needed for get-ebs-encryption-by-default"
       continue
@@ -29,9 +30,9 @@ extra761(){
       continue
     fi
     if [[ $EBS_DEFAULT_ENCRYPTION == "true" ]];then
-      textPass "$regx: EBS Default Encryption is activated" "$regx"
+      textPass "$region: EBS Default Encryption is activated" "$region"
     else
-      textFail "$regx: EBS Default Encryption is not activated" "$regx"
+      textFail "$region: EBS Default Encryption is not activated" "$region"
     fi
     done
 }

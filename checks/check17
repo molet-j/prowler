@@ -13,14 +13,15 @@ CHECK_TITLE_check17="[check17] Ensure IAM password policy require at least one s
 CHECK_SCORED_check17="SCORED"
 CHECK_TYPE_check17="LEVEL1"
 CHECK_ASFF_TYPE_check17="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check17="AwsIamAccountPasswordPolicy"
 CHECK_ALTERNATE_check107="check17"
 
 check17(){
   # "Ensure IAM password policy require at least one symbol (Scored)"
   COMMAND17=$($AWSCLI iam get-account-password-policy $PROFILE_OPT --region $REGION --output json --query 'PasswordPolicy.RequireSymbols' 2> /dev/null) # must be true
   if [[ "$COMMAND17" == "true" ]];then
-    textPass "Password Policy requires symbol"
+    textPass "Password Policy requires symbol" "GlobalRegion" "AccountPasswordPolicy"
   else
-    textFail "Password Policy missing symbol requirement"
+    textFail "Password Policy missing symbol requirement" "GlobalRegion" "AccountPasswordPolicy"
   fi
 }

@@ -13,14 +13,15 @@ CHECK_TITLE_check15="[check15] Ensure IAM password policy requires at least one 
 CHECK_SCORED_check15="SCORED"
 CHECK_TYPE_check15="LEVEL1"
 CHECK_ASFF_TYPE_check15="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check15="AwsIamAccountPasswordPolicy"
 CHECK_ALTERNATE_check105="check15"
 
 check15(){
   # "Ensure IAM password policy requires at least one uppercase letter (Scored)"
   COMMAND15=$($AWSCLI iam get-account-password-policy $PROFILE_OPT --region $REGION --output json --query 'PasswordPolicy.RequireUppercaseCharacters' 2> /dev/null) # must be true
   if [[ "$COMMAND15" == "true" ]];then
-    textPass "Password Policy requires upper case"
+    textPass "Password Policy requires upper case" "GlobalRegion" "AccountPasswordPolicy"
   else
-    textFail "Password Policy missing upper-case requirement"
+    textFail "Password Policy missing upper-case requirement" "GlobalRegion" "AccountPasswordPolicy"
   fi
 }
