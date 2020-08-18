@@ -12,6 +12,8 @@
 # specific language governing permissions and limitations under the License.
 
 GROUP_ID[10]='hipaa'
+GROUP_NAME[10]='hipaa'
+GROUP_ALTERNATE[10]="group10"
 GROUP_NUMBER[10]='10.0'
 GROUP_TITLE[10]='HIPAA Compliance - ONLY AS REFERENCE - [hipaa] ****************'
 GROUP_RUN_BY_DEFAULT[10]='N' # run it when execute_all is called

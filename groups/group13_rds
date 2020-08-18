@@ -12,6 +12,8 @@
 # specific language governing permissions and limitations under the License.
 
 GROUP_ID[13]='rds'
+GROUP_NAME[13]='rds'
+GROUP_ALTERNATE[13]="group13"
 GROUP_NUMBER[13]='13.0'
 GROUP_TITLE[13]='RDS security checks - [rds] ***********************************'
 GROUP_RUN_BY_DEFAULT[13]='N' # run it when execute_all is called

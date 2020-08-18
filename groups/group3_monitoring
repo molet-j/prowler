@@ -9,6 +9,8 @@
 # work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
 GROUP_ID[3]='group3'
+GROUP_NAME[3]='group3'
+GROUP_ALTERNATE[3]="monitoring"
 GROUP_NUMBER[3]='3.0'
 GROUP_TITLE[3]='Monitoring - CIS only - [group3] *******************************'
 GROUP_RUN_BY_DEFAULT[3]='Y' # run it when execute_all is called

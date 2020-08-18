@@ -12,6 +12,7 @@
 # specific language governing permissions and limitations under the License.
 
 GROUP_ID[7]='extras'
+GROUP_NAME[7]='extras'
 GROUP_NUMBER[7]='7.0'
 GROUP_TITLE[7]='Extras - all non CIS specific checks - [extras] ****************'
 GROUP_RUN_BY_DEFAULT[7]='Y' # run it when execute_all is called

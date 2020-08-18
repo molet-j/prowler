@@ -9,6 +9,8 @@
 # work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
 GROUP_ID[1]='group1'
+GROUP_NAME[1]='group1'
+GROUP_ALTERNATE[1]="iam"
 GROUP_NUMBER[1]='1.0'
 GROUP_TITLE[1]='Identity and Access Management - CIS only - [group1] ***********'
 GROUP_RUN_BY_DEFAULT[1]='Y' # run it when execute_all is called

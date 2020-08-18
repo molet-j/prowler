@@ -12,6 +12,7 @@
 # specific language governing permissions and limitations under the License.
 
 GROUP_ID[8]='forensics-ready'
+GROUP_NAME[8]='forensics-ready'
 GROUP_NUMBER[8]='8.0'
 GROUP_TITLE[8]='Forensics Readiness - [forensics-ready] ************************'
 GROUP_RUN_BY_DEFAULT[8]='N' # run it when execute_all is called

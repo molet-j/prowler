@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+#echo "DEBUG: before anything. The following list SHOULD BE EMPTY"
+#echo "DEBUG: all group ids are: ' ${GROUP_ID[@]} '"
+#echo "DEBUG: all group names are: ' ${GROUP_NAME[@]} '"
+#echo "DEBUG: all group alternate names are: ' ${GROUP_ALTERNATE[@]} '"
+
+
 # Copyright 2018 Toni de la Fuente
 
 # Prowler is a tool that provides automate auditing and hardening guidance of an
@@ -286,12 +292,12 @@ show_check_title() {
   # If requested ($2 is any non-null value) iterate all GROUP_CHECKS and produce a comma-separated list of all
   # the GROUP_IDs that include this particular check
   if [[ -n "$2" ]]; then
-    for group_index in "${!GROUP_ID[@]}"; do
+    for group_index in "${!GROUP_NAME[@]}"; do
       if [[ "${GROUP_CHECKS[$group_index]}" =~ "$1" ]]; then
         if [[ -n "$group_ids" ]]; then
           group_ids+=", "
         fi
-        group_ids+="${GROUP_ID[$group_index]}"
+        group_ids+="${GROUP_NAME[$group_index]}"
       fi
     done
   fi
@@ -393,12 +399,12 @@ execute_group() {
 
 # Function to execute group by name
 execute_group_by_id() {
-  if [ "${GROUP_ID[$1]}" == "group1" ]; then
+  if [ "${GROUP_NAME[$1]}" == "group1" ]; then
     genCredReport
     saveReport
   fi
-	for i in "${!GROUP_ID[@]}"; do
-		if [ "${GROUP_ID[$i]}" == "$1" ]; then
+	for i in "${!GROUP_NAME[@]}"; do
+		if [ "${GROUP_NAME[$i]}" == "$1" ]; then
 			execute_group ${i} $2
 		fi
 	done
@@ -423,9 +429,9 @@ show_all_titles() {
   local group_index
   # If '-g <group_id>' has been specified, only show the titles of checks within the specified group
   if [[ $GROUP_ID_READ ]];then
-    if [[ " ${GROUP_ID[@]} " =~ " ${GROUP_ID_READ} " ]]; then
-      for group_index in "${!GROUP_ID[@]}"; do
-        if [ "${GROUP_ID[$group_index]}" == "${GROUP_ID_READ}" ]; then
+    if [[ " ${GROUP_NAME[@]} " =~ " ${GROUP_ID_READ} " ]]; then
+      for group_index in "${!GROUP_NAME[@]}"; do
+        if [ "${GROUP_NAME[$group_index]}" == "${GROUP_ID_READ}" ]; then
           show_group_title "$group_index"
           IFS=',' read -ra checks <<< "${GROUP_CHECKS[$group_index]}"
           for check_id in ${checks[@]}; do
@@ -509,11 +515,36 @@ fi
 # Gather account data / test aws cli connectivity
 getWhoami
 
-# Execute group of checks if called with -g
-if [[ $GROUP_ID_READ ]];then
-  if [[ " ${GROUP_ID[@]} " =~ " ${GROUP_ID_READ} " ]]; then
+#echo "DEBUG: After loading. The following list SHOULD contain the groups info"
+#echo "DEBUG: all group ids are: ' ${GROUP_ID[@]} '. It is not used anymore"
+#echo "DEBUG: all group names are: ' ${GROUP_NAME[@]} '"
+#echo "DEBUG: all group alternate names are: ' ${GROUP_ALTERNATE[@]} '"
+#echo "DEBUG: IF input:' ${GROUP_ID_READ} ' is somewhere in ' ${GROUP_NAME[@]} '"
+#echo "DEBUG: ELIF input:' ${GROUP_ID_READ} ' is somewhere in ' ${GROUP_ALTERNATE[@]} '"
+#echo "DEBUG: ELSE it is a wrong group name"
 
+# Execute group of checks if called with -g
+if [[ $GROUP_ID_READ ]]; then
+  if [[ " ${GROUP_NAME[@]} " =~ " ${GROUP_ID_READ} " ]]; then
+    echo "DEBUG: This group input is a Name: ${GROUP_ID_READ}. Executing it."
     execute_group_by_id ${GROUP_ID_READ} ${EXCLUDE_CHECK_ID}
+    if [[ "${MODES[@]}" =~ "html" ]]; then
+      addHtmlFooter >> ${OUTPUT_FILE_NAME}.$EXTENSION_HTML
+    fi
+    cleanTemp
+    scoring
+    exit $EXITCODE
+  elif [[ " ${GROUP_ALTERNATE[@]} " =~ " ${GROUP_ID_READ} " ]]; then
+
+    echo "DEBUG: This group input is an Alternate Name: ${GROUP_ID_READ}. Searching its real group Name..."
+    for i in "${!GROUP_ALTERNATE[@]}"; do
+      #echo "DEBUG: RangeID: ${i}, AlternateName: ${GROUP_ALTERNATE[$i]}"
+      if [[ "${GROUP_ALTERNATE[$i]}" = "${GROUP_ID_READ}" ]]; then
+        echo "DEBUG: Found that group Alternate Name: ${GROUP_ALTERNATE[$i]}, Range index: ${i}, real group Name: ${GROUP_NAME[$i]}. Executing it."
+        execute_group_by_id ${GROUP_NAME[$i]} ${EXCLUDE_CHECK_ID}
+        break
+      fi
+    done
     if [[ "${MODES[@]}" =~ "html" ]]; then
       addHtmlFooter >> ${OUTPUT_FILE_NAME}.$EXTENSION_HTML
     fi

@@ -11,8 +11,10 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 
-GROUP_ID[9]='my-custom-group'
-GROUP_NUMBER[9]='9.0'
-GROUP_TITLE[9]='My Custom Group - [my-custom-group] ****************************'
-GROUP_RUN_BY_DEFAULT[9]='N' # run it when execute_all is called
-GROUP_CHECKS[9]='checkNN,checkMM'
+GROUP_ID[999]='my-custom-group'
+GROUP_NAME[999]='my-custom-group'
+GROUP_ALTERNATE[999]="group18"
+GROUP_NUMBER[999]='999.0'
+GROUP_TITLE[999]='My Custom Group - [my-custom-group] ****************************'
+GROUP_RUN_BY_DEFAULT[999]='N' # run it when execute_all is called
+GROUP_CHECKS[999]='checkNN,checkMM'

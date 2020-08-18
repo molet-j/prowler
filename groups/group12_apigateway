@@ -12,6 +12,8 @@
 # specific language governing permissions and limitations under the License.
 
 GROUP_ID[12]='apigateway'
+GROUP_NAME[12]='apigateway'
+GROUP_ALTERNATE[12]="group12"
 GROUP_NUMBER[12]='12.0'
 GROUP_TITLE[12]='API Gateway security checks - [apigateway] ********************'
 GROUP_RUN_BY_DEFAULT[12]='N' # run it when execute_all is called

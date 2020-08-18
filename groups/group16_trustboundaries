@@ -12,6 +12,8 @@
 # specific language governing permissions and limitations under the License.
 
 GROUP_ID[16]='trustboundaries'
+GROUP_NAME[16]='trustboundaries'
+GROUP_ALTERNATE[16]="group16"
 GROUP_NUMBER[16]='16.0'
 GROUP_TITLE[16]='Find cross-account trust boundaries - [trustboundaries] *******'
 GROUP_RUN_BY_DEFAULT[16]='N' # run it when execute_all is called

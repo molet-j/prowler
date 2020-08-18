@@ -12,6 +12,8 @@
 # specific language governing permissions and limitations under the License.
 
 GROUP_ID[18]='iso27001'
+GROUP_NAME[18]='iso27001'
+GROUP_ALTERNATE[18]="group18"
 GROUP_NUMBER[18]='18.0'
 GROUP_TITLE[18]='ISO 27001:2013 Readiness - ONLY AS REFERENCE - [iso27001] *********'
 GROUP_RUN_BY_DEFAULT[18]='N' # run it when execute_all is called

@@ -12,6 +12,8 @@
 # specific language governing permissions and limitations under the License.
 
 GROUP_ID[14]='elasticsearch'
+GROUP_NAME[14]='elasticsearch'
+GROUP_ALTERNATE[14]="group14"
 GROUP_NUMBER[14]='14.0'
 GROUP_TITLE[14]='Elasticsearch related security checks - [elasticsearch] *******'
 GROUP_RUN_BY_DEFAULT[14]='N' # run it when execute_all is called

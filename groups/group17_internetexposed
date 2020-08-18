@@ -12,6 +12,8 @@
 # specific language governing permissions and limitations under the License.
 
 GROUP_ID[17]='internet-exposed'
+GROUP_NAME[17]='internet-exposed'
+GROUP_ALTERNATE[17]="group17"
 GROUP_NUMBER[17]='17.0'
 GROUP_TITLE[17]='Find resources exposed to the internet - [internet-exposed] *******'
 GROUP_RUN_BY_DEFAULT[17]='N' # run it when execute_all is called

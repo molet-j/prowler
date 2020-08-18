@@ -12,6 +12,8 @@
 # specific language governing permissions and limitations under the License.
 
 GROUP_ID[15]='pci'
+GROUP_NAME[15]='pci'
+GROUP_ALTERNATE[15]="group15"
 GROUP_NUMBER[15]='15.0'
 GROUP_TITLE[15]='PCI-DSS v3.2.1 Readiness - ONLY AS REFERENCE - [pci] **********'
 GROUP_RUN_BY_DEFAULT[15]='N' # run it when execute_all is called

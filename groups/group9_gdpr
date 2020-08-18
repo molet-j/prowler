@@ -12,6 +12,8 @@
 # specific language governing permissions and limitations under the License.
 
 GROUP_ID[9]='gdpr'
+GROUP_NAME[9]='gdpr'
+GROUP_ALTERNATE[9]="group9"
 GROUP_NUMBER[9]='9.0'
 GROUP_TITLE[9]='GDPR Readiness - ONLY AS REFERENCE - [gdpr] ********************'
 GROUP_RUN_BY_DEFAULT[9]='N' # run it when execute_all is called

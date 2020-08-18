@@ -9,6 +9,8 @@
 # work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
 GROUP_ID[19]='eks-cis'
+GROUP_NAME[19]='eks-cis'
+GROUP_ALTERNATE[19]="group19"
 GROUP_NUMBER[19]='19.0'
 GROUP_TITLE[19]='CIS EKS Benchmark *****************************************'
 GROUP_RUN_BY_DEFAULT[19]='N' # run it when execute_all is called
